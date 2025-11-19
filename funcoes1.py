@@ -1,5 +1,3 @@
-# funcoes.py (Versão ajustada para GUI)
-
 import json
 from datetime import datetime
 
@@ -26,8 +24,6 @@ def validar_data(data_str):
     except:
         return False
 
-
-# CORREÇÃO CRÍTICA: Deve aceitar 5 argumentos
 def adicionar_transacao(data, tipo, categoria, descricao, valor_str):
     if not validar_data(data):
         return "Erro: Data inválida! Use o formato dd/mm/aaaa."
@@ -53,10 +49,6 @@ def adicionar_transacao(data, tipo, categoria, descricao, valor_str):
 
     salvar_dados(transacoes)
     return "Transação salva e adicionada com sucesso!"
-
-
-# As demais funções (remover_transacao, listar_todas, etc.) devem ser mantidas conforme a última versão que você recebeu,
-# garantindo que todas as funções sejam definidas e aceitem os argumentos corretos para a GUI.
 
 def remover_transacao(idx):
     transacoes = carregar_dados()
@@ -160,5 +152,6 @@ def saldo_por_periodo(inicio, fim):
                     saldo -= t["valor"]
         except:
             pass
+
 
     return f"Saldo no período ({inicio} a {fim}): R$ {saldo:.2f}"
