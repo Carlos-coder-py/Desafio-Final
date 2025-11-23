@@ -88,7 +88,7 @@ def gerar_grafico_pizza_gastos():
     valores = list(gastos_por_categoria.values())
 
     # Configuração do gráfico
-    plt.figure(figsize=(8, 8))
+    plt.figure(figsize=(5, 5))
 
     plt.pie(valores, labels=categorias, autopct='%1.1f%%', startangle=90, shadow=True,
             wedgeprops={'edgecolor': 'black'})
@@ -100,4 +100,5 @@ def gerar_grafico_pizza_gastos():
     # Exibe o gráfico em uma nova janela
     plt.show()
 
-    return "Gráfico de pizza gerado com sucesso! (Verifique a nova janela pop-up do Matplotlib)"
+
+    return "Gráfico de pizza gerado com sucesso!"
