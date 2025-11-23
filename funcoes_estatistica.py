@@ -100,5 +100,4 @@ def gerar_grafico_pizza_gastos():
     # Exibe o gráfico em uma nova janela
     plt.show()
 
-
     return "Gráfico de pizza gerado com sucesso!"
