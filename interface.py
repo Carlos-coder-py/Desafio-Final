@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox, Toplevel, scrolledtext
 import funcoes1 as fn
+import funcoes_estatistica as fnes
 
 USUARIOS = {}
 
@@ -194,6 +195,7 @@ class AdicionarTransacaoPopup(Toplevel):
             messagebox.showinfo("Sucesso", resultado)
             self.destroy()
 
+
 # Pop-up para Listar Todas
 class ListarTodasPopup(Toplevel):
     def __init__(self, parent):
@@ -313,6 +315,65 @@ class ListarPorPeriodoPopup(Toplevel):
         self.resultado_area.config(state=tk.DISABLED)
 
 
+# Pop-up para Estatísticas e Gráficos
+class PopupEstatisticas(Toplevel):
+    def __init__(self, parent):
+        Toplevel.__init__(self, parent)
+        self.title("Estatísticas e Gráficos")
+        self.geometry("450x400")
+        self.transient(parent)
+        self.grab_set()
+
+        # Variáveis de controle para o período
+        self.inicio_var = tk.StringVar()
+        self.fim_var = tk.StringVar()
+
+        tk.Label(self, text="Estatísticas por Período:", font=("Arial", 12, "bold")).pack(pady=5)
+
+        # Entrada de Período
+        frame_periodo = tk.Frame(self)
+        frame_periodo.pack(pady=5)
+
+        tk.Label(frame_periodo, text="Início (dd/mm/aaaa):").pack(side=tk.LEFT, padx=5)
+        tk.Entry(frame_periodo, textvariable=self.inicio_var, width=15).pack(side=tk.LEFT, padx=5)
+
+        tk.Label(frame_periodo, text="Fim (dd/mm/aaaa):").pack(side=tk.LEFT, padx=5)
+        tk.Entry(frame_periodo, textvariable=self.fim_var, width=15).pack(side=tk.LEFT, padx=5)
+
+        tk.Button(self, text="Calcular Receitas/Despesas do Período", command=self.mostrar_estatisticas_periodo).pack(
+            pady=5)
+
+        tk.Button(self, text="Média de Gastos por Categoria", command=self.mostrar_media_gastos).pack(pady=5)
+
+        tk.Button(self, text="Gerar Gráfico de Pizza (Gastos)", command=self.gerar_grafico).pack(pady=10)
+
+        # Área para exibir resultados de texto
+        tk.Label(self, text="Resultados:", font=("Arial", 10, "italic")).pack(pady=2)
+        self.resultado_area = scrolledtext.ScrolledText(self, wrap=tk.WORD, width=50, height=8)
+        self.resultado_area.pack(pady=5, padx=10)
+
+    def atualizar_resultado_area(self, texto):
+        self.resultado_area.config(state=tk.NORMAL)
+        self.resultado_area.delete(1.0, tk.END)
+        self.resultado_area.insert(tk.INSERT, texto)
+        self.resultado_area.config(state=tk.DISABLED)
+
+    def mostrar_estatisticas_periodo(self):
+        inicio = self.inicio_var.get()
+        fim = self.fim_var.get()
+
+        resultado, _, _ = fnes.calcular_estatisticas_periodo(inicio, fim)
+        self.atualizar_resultado_area(resultado)
+
+    def mostrar_media_gastos(self):
+        resultado = fnes.calcular_media_gastos_por_categoria()
+        self.atualizar_resultado_area(resultado)
+
+    def gerar_grafico(self):
+        resultado = fnes.gerar_grafico_pizza_gastos()
+        self.atualizar_resultado_area(resultado)
+
+
 # --- Tela Principal do Sistema ---
 class TelaSistema(tk.Frame):
     def __init__(self, parent, controller):
@@ -350,6 +411,12 @@ class TelaSistema(tk.Frame):
                               command=lambda: ListarPorPeriodoPopup(self.master, modo="saldo"))
         btn_saldo.pack(pady=5, padx=PAD_X, fill='x')
 
+        #Botão de Estatistica
+        btn_estatisticas = tk.Button(center_frame, text="Estatísticas e Gráficos",
+                                     command=lambda: PopupEstatisticas(self.master))
+        btn_estatisticas.pack(pady=5, padx=PAD_X, fill='x')
+
+
         btn_remover = tk.Button(center_frame, text="Remover Transação",
                                 command=lambda: RemoverTransacaoPopup(self.master))
         btn_remover.pack(pady=5, padx=PAD_X, fill='x')
@@ -361,5 +428,6 @@ class TelaSistema(tk.Frame):
 def inicializar():
     app = Aplicacao()
     app.mainloop()
+
 
 inicializar()
