@@ -16,7 +16,7 @@ def exibir_menu():
     print("6 - Sair")
 
 while True:
-    exibir_menu()  # <-- AGORA O MENU APARECE!
+    exibir_menu()
     opcao = input("Escolha uma das opções: ")
 
     if opcao == "1":
@@ -34,3 +34,4 @@ while True:
         break
     else:
         print("Opção inválida, tente novamente.")
+
