@@ -2,6 +2,10 @@ import tkinter as tk
 from tkinter import messagebox, Toplevel, scrolledtext
 import funcoes1 as fn
 import funcoes_estatistica as fnes
+from log_config import get_logger  # Importa o logger modularizado
+
+# 1. Obter o logger específico para este módulo
+logger = get_logger('GUI.Interface')
 
 USUARIOS = {}
 
@@ -11,6 +15,8 @@ class Aplicacao(tk.Tk):
         super().__init__()
         self.title("Controle Financeiro")
         self.geometry("450x400")
+
+        logger.info("Aplicação iniciada.")
 
         self.container = tk.Frame(self)
         self.container.pack(side="top", fill="both", expand=True)
@@ -28,33 +34,40 @@ class Aplicacao(tk.Tk):
         self.show_frame("TelaLogin")
 
     def show_frame(self, page_name):
+        logger.info(f"Navegando para a tela: {page_name}")
         frame = self.frames[page_name]
         frame.tkraise()
 
     def verificar_login(self, usuario, senha):
         if not USUARIOS:
+            logger.warning("Tentativa de login sem usuários cadastrados.")
             messagebox.showwarning("Atenção",
                                    "Nenhum usuário cadastrado. Por favor, use o botão 'Criar Conta' para cadastrar o primeiro usuário.")
             return False
 
         if usuario in USUARIOS and USUARIOS[usuario] == senha:
+            logger.info(f"Login bem-sucedido para o usuário: {usuario}")
             messagebox.showinfo("Login", "Login bem-sucedido!")
             self.show_frame("TelaSistema")
             return True
         else:
+            logger.error(f"Falha de login: Usuário '{usuario}' ou senha incorretos.")
             messagebox.showerror("Erro de Login", "Nome de usuário ou senha incorretos.")
             return False
 
     def adicionar_usuario(self, usuario, senha):
         if not usuario or not senha:
+            logger.error("Tentativa de cadastro com campos vazios.")
             messagebox.showerror("Erro de Cadastro", "Nome de usuário e senha não podem ser vazios.")
             return False
 
         if usuario in USUARIOS:
+            logger.warning(f"Tentativa de cadastro de usuário já existente: {usuario}")
             messagebox.showerror("Erro de Cadastro", "Nome de usuário já existe.")
             return False
 
         USUARIOS[usuario] = senha
+        logger.info(f"Novo usuário cadastrado: {usuario}")
         messagebox.showinfo("Cadastro", f"Usuário '{usuario}' cadastrado com sucesso!")
         self.show_frame("TelaLogin")
         return True
@@ -62,7 +75,8 @@ class Aplicacao(tk.Tk):
 
 class TelaLogin(tk.Frame):
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
+        # CORREÇÃO TKINTER
+        super().__init__(parent)
         self.controller = controller
 
         center_frame = tk.Frame(self)
@@ -105,7 +119,8 @@ class TelaLogin(tk.Frame):
 
 class TelaCadastro(tk.Frame):
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
+        # CORREÇÃO TKINTER
+        super().__init__(parent)
         self.controller = controller
 
         center_frame = tk.Frame(self)
@@ -143,7 +158,8 @@ class TelaCadastro(tk.Frame):
 # Pop-up para Adicionar Transação
 class AdicionarTransacaoPopup(Toplevel):
     def __init__(self, parent):
-        Toplevel.__init__(self, parent)
+        # CORREÇÃO TKINTER
+        super().__init__(parent)
         self.title("Adicionar Nova Transação")
         self.geometry("300x350")
         self.transient(parent)
@@ -190,8 +206,10 @@ class AdicionarTransacaoPopup(Toplevel):
         )
 
         if resultado.startswith("Erro"):
+            logger.error(f"Falha ao salvar transação. Detalhe: {resultado}")
             messagebox.showerror("Erro ao Salvar", resultado)
         else:
+            logger.info(f"Transação salva com sucesso: {self.tipo_var.get()} | {self.valor_var.get()}")
             messagebox.showinfo("Sucesso", resultado)
             self.destroy()
 
@@ -199,9 +217,11 @@ class AdicionarTransacaoPopup(Toplevel):
 # Pop-up para Listar Todas
 class ListarTodasPopup(Toplevel):
     def __init__(self, parent):
-        Toplevel.__init__(self, parent)
+        # CORREÇÃO TKINTER
+        super().__init__(parent)
         self.title("Todas as Transações")
         self.geometry("600x400")
+        logger.info("Listagem de todas as transações solicitada.")
 
         resultado = fn.listar_todas()
 
@@ -214,7 +234,8 @@ class ListarTodasPopup(Toplevel):
 # Pop-up para Remover Transação
 class RemoverTransacaoPopup(Toplevel):
     def __init__(self, parent):
-        Toplevel.__init__(self, parent)
+        # CORREÇÃO TKINTER
+        super().__init__(parent)
         self.title("🗑Remover Transação")
         self.geometry("450x300")
         self.transient(parent)
@@ -234,11 +255,14 @@ class RemoverTransacaoPopup(Toplevel):
         tk.Button(self, text="Remover", command=self.remover).pack(pady=15)
 
     def remover(self):
-        resultado = fn.remover_transacao(self.idx_var.get())
+        idx = self.idx_var.get()
+        resultado = fn.remover_transacao(idx)
 
         if resultado.startswith("Erro"):
+            logger.error(f"Falha ao remover transação (Índice: {idx}). Detalhe: {resultado}")
             messagebox.showerror("Erro ao Remover", resultado)
         else:
+            logger.info(f"Transação de índice '{idx}' removida com sucesso.")
             messagebox.showinfo("Sucesso", resultado)
             self.destroy()
 
@@ -246,7 +270,8 @@ class RemoverTransacaoPopup(Toplevel):
 # Pop-up para Listar por Categoria
 class ListarPorCategoriaPopup(Toplevel):
     def __init__(self, parent):
-        Toplevel.__init__(self, parent)
+        # CORREÇÃO TKINTER
+        super().__init__(parent)
         self.title("Listar por Categoria")
         self.geometry("400x350")
         self.transient(parent)
@@ -264,6 +289,7 @@ class ListarPorCategoriaPopup(Toplevel):
 
     def buscar(self):
         categoria = self.cat_var.get()
+        logger.info(f"Buscando transações pela categoria: {categoria}")
         resultado = fn.listar_por_categoria(categoria)
 
         self.resultado_area.config(state=tk.NORMAL)
@@ -275,7 +301,8 @@ class ListarPorCategoriaPopup(Toplevel):
 # Pop-up para Listar por Período e Saldo
 class ListarPorPeriodoPopup(Toplevel):
     def __init__(self, parent, modo="listar"):
-        Toplevel.__init__(self, parent)
+        # CORREÇÃO TKINTER
+        super().__init__(parent)
         self.modo = modo
         if modo == "listar":
             self.title("Listar por Período")
@@ -305,8 +332,10 @@ class ListarPorPeriodoPopup(Toplevel):
         fim = self.fim_var.get()
 
         if self.modo == "listar":
+            logger.info(f"Listando transações no período: {inicio} a {fim}")
             resultado = fn.listar_por_periodo(inicio, fim)
         else:
+            logger.info(f"Calculando saldo no período: {inicio} a {fim}")
             resultado = fn.saldo_por_periodo(inicio, fim)
 
         self.resultado_area.config(state=tk.NORMAL)
@@ -318,7 +347,8 @@ class ListarPorPeriodoPopup(Toplevel):
 # Pop-up para Estatísticas e Gráficos
 class PopupEstatisticas(Toplevel):
     def __init__(self, parent):
-        Toplevel.__init__(self, parent)
+        # CORREÇÃO TKINTER
+        super().__init__(parent)
         self.title("Estatísticas e Gráficos")
         self.geometry("450x400")
         self.transient(parent)
@@ -361,23 +391,37 @@ class PopupEstatisticas(Toplevel):
     def mostrar_estatisticas_periodo(self):
         inicio = self.inicio_var.get()
         fim = self.fim_var.get()
+        logger.info(f"Solicitado cálculo de estatísticas para o período: {inicio} a {fim}")
 
         resultado, _, _ = fnes.calcular_estatisticas_periodo(inicio, fim)
+
+        if resultado.startswith("Erro"):
+            logger.error(f"Erro ao calcular estatísticas. Detalhe: {resultado.split(':')[1].strip()}")
+
         self.atualizar_resultado_area(resultado)
 
     def mostrar_media_gastos(self):
+        logger.info("Solicitado cálculo da média de gastos por categoria.")
         resultado = fnes.calcular_media_gastos_por_categoria()
         self.atualizar_resultado_area(resultado)
 
     def gerar_grafico(self):
+        logger.info("Solicitada geração de gráfico de pizza de gastos.")
         resultado = fnes.gerar_grafico_pizza_gastos()
+
+        if resultado.startswith("Não há"):
+            logger.warning("Gráfico não gerado: Não há despesas registradas.")
+        else:
+            logger.info("Gráfico gerado com sucesso.")
+
         self.atualizar_resultado_area(resultado)
 
 
 # --- Tela Principal do Sistema ---
 class TelaSistema(tk.Frame):
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
+        # CORREÇÃO TKINTER
+        super().__init__(parent)
         self.controller = controller
 
         center_frame = tk.Frame(self)
@@ -411,11 +455,10 @@ class TelaSistema(tk.Frame):
                               command=lambda: ListarPorPeriodoPopup(self.master, modo="saldo"))
         btn_saldo.pack(pady=5, padx=PAD_X, fill='x')
 
-        #Botão de Estatistica
+        # Botão de Estatistica
         btn_estatisticas = tk.Button(center_frame, text="Estatísticas e Gráficos",
                                      command=lambda: PopupEstatisticas(self.master))
         btn_estatisticas.pack(pady=5, padx=PAD_X, fill='x')
-
 
         btn_remover = tk.Button(center_frame, text="Remover Transação",
                                 command=lambda: RemoverTransacaoPopup(self.master))
