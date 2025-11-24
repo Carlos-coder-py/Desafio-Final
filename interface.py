@@ -2,11 +2,13 @@ import tkinter as tk
 from tkinter import messagebox, Toplevel, scrolledtext
 import funcoes1 as fn
 import funcoes_estatistica as fnes
-from log_config import get_logger
+from log_config import get_logger  # Importa o logger modularizado
 
+# 1. Obter o logger específico para este módulo
 logger = get_logger('GUI.Interface')
 
 USUARIOS = {}
+
 
 class Aplicacao(tk.Tk):
     def __init__(self):
@@ -73,6 +75,7 @@ class Aplicacao(tk.Tk):
 
 class TelaLogin(tk.Frame):
     def __init__(self, parent, controller):
+        # CORREÇÃO TKINTER
         super().__init__(parent)
         self.controller = controller
 
@@ -116,6 +119,7 @@ class TelaLogin(tk.Frame):
 
 class TelaCadastro(tk.Frame):
     def __init__(self, parent, controller):
+        # CORREÇÃO TKINTER
         super().__init__(parent)
         self.controller = controller
 
@@ -154,6 +158,7 @@ class TelaCadastro(tk.Frame):
 # Pop-up para Adicionar Transação
 class AdicionarTransacaoPopup(Toplevel):
     def __init__(self, parent):
+        # CORREÇÃO TKINTER
         super().__init__(parent)
         self.title("Adicionar Nova Transação")
         self.geometry("300x350")
@@ -212,6 +217,7 @@ class AdicionarTransacaoPopup(Toplevel):
 # Pop-up para Listar Todas
 class ListarTodasPopup(Toplevel):
     def __init__(self, parent):
+        # CORREÇÃO TKINTER
         super().__init__(parent)
         self.title("Todas as Transações")
         self.geometry("600x400")
@@ -228,6 +234,7 @@ class ListarTodasPopup(Toplevel):
 # Pop-up para Remover Transação
 class RemoverTransacaoPopup(Toplevel):
     def __init__(self, parent):
+        # CORREÇÃO TKINTER
         super().__init__(parent)
         self.title("🗑Remover Transação")
         self.geometry("450x300")
@@ -263,6 +270,7 @@ class RemoverTransacaoPopup(Toplevel):
 # Pop-up para Listar por Categoria
 class ListarPorCategoriaPopup(Toplevel):
     def __init__(self, parent):
+        # CORREÇÃO TKINTER
         super().__init__(parent)
         self.title("Listar por Categoria")
         self.geometry("400x350")
@@ -293,6 +301,7 @@ class ListarPorCategoriaPopup(Toplevel):
 # Pop-up para Listar por Período e Saldo
 class ListarPorPeriodoPopup(Toplevel):
     def __init__(self, parent, modo="listar"):
+        # CORREÇÃO TKINTER
         super().__init__(parent)
         self.modo = modo
         if modo == "listar":
@@ -338,6 +347,7 @@ class ListarPorPeriodoPopup(Toplevel):
 # Pop-up para Estatísticas e Gráficos
 class PopupEstatisticas(Toplevel):
     def __init__(self, parent):
+        # CORREÇÃO TKINTER
         super().__init__(parent)
         self.title("Estatísticas e Gráficos")
         self.geometry("450x400")
@@ -407,9 +417,10 @@ class PopupEstatisticas(Toplevel):
         self.atualizar_resultado_area(resultado)
 
 
-# Tela Principal do Sistema
+# --- Tela Principal do Sistema ---
 class TelaSistema(tk.Frame):
     def __init__(self, parent, controller):
+        # CORREÇÃO TKINTER
         super().__init__(parent)
         self.controller = controller
 
@@ -460,5 +471,6 @@ class TelaSistema(tk.Frame):
 def inicializar():
     app = Aplicacao()
     app.mainloop()
+
 
 inicializar()
