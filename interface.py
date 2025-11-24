@@ -73,7 +73,6 @@ class Aplicacao(tk.Tk):
 
 class TelaLogin(tk.Frame):
     def __init__(self, parent, controller):
-        # CORREÇÃO TKINTER
         super().__init__(parent)
         self.controller = controller
 
@@ -117,7 +116,6 @@ class TelaLogin(tk.Frame):
 
 class TelaCadastro(tk.Frame):
     def __init__(self, parent, controller):
-        # CORREÇÃO TKINTER
         super().__init__(parent)
         self.controller = controller
 
@@ -156,7 +154,6 @@ class TelaCadastro(tk.Frame):
 # Pop-up para Adicionar Transação
 class AdicionarTransacaoPopup(Toplevel):
     def __init__(self, parent):
-        # CORREÇÃO TKINTER
         super().__init__(parent)
         self.title("Adicionar Nova Transação")
         self.geometry("300x350")
@@ -410,7 +407,7 @@ class PopupEstatisticas(Toplevel):
         self.atualizar_resultado_area(resultado)
 
 
-# --- Tela Principal do Sistema ---
+# Tela Principal do Sistema
 class TelaSistema(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
